@@ -19,7 +19,7 @@ class _LoginPageState extends State<LoginPage> {
     TextEditingController passwordController = TextEditingController();
 
     return Scaffold(
-      backgroundColor: Colors.greenAccent,
+      backgroundColor: Colors.orangeAccent,
       appBar: AppBar(
         title: const Text('Login Page'),
         centerTitle: true,
