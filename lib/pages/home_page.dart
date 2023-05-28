@@ -22,7 +22,16 @@ class HomePage extends StatelessWidget {
         ],
       ),
       body: Center(
-        child: Text(FirebaseAuth.instance.currentUser!.email.toString()),
+        child: Column(
+          children: [
+            Container(
+              color: Colors.lightBlue,
+              child: ListTile(
+                title: Center(child: Text(FirebaseAuth.instance.currentUser!.email.toString())),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
