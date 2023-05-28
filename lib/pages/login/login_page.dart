@@ -19,7 +19,7 @@ class _LoginPageState extends State<LoginPage> {
     TextEditingController passwordController = TextEditingController();
 
     return Scaffold(
-      backgroundColor: Colors.orangeAccent,
+      backgroundColor: Colors.lightGreenAccent,
       appBar: AppBar(
         title: const Text('Login Page'),
         centerTitle: true,
@@ -71,7 +71,8 @@ class _LoginPageState extends State<LoginPage> {
                               backgroundColor: Colors.red,
                             );
                           } else {
-                            await AuthService().login(emailController.text, passwordController.text);
+                            await AuthService()
+                                .login(emailController.text, passwordController.text);
                             Get.to(() => const HomePage(), fullscreenDialog: true);
                           }
                           setState(() {
