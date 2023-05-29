@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../services/auth_service.dart';
-import '../home_page.dart';
-import '../login/login_page.dart';
+import '../services/auth_service.dart';
+import 'home_page.dart';
+import 'login_page.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -83,7 +83,8 @@ class _RegisterPageState extends State<RegisterPage> {
                               colorText: Colors.white,
                               backgroundColor: Colors.red,
                             );
-                          } else if (passwordController.text != passwordconfirmController.text) {
+                          } else if (passwordController.text !=
+                              passwordconfirmController.text) {
                             Get.snackbar(
                               'Error',
                               "Password does't match!",
@@ -92,7 +93,8 @@ class _RegisterPageState extends State<RegisterPage> {
                               backgroundColor: Colors.red,
                             );
                           } else {
-                            await AuthService().register(emailController.text, passwordController.text);
+                            await AuthService()
+                                .register(emailController.text, passwordController.text);
                             Get.to(() => const HomePage(), fullscreenDialog: true);
                           }
                           setState(() {

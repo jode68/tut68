@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:tut68/pages/detail_page.dart';
 
-import 'models/my_model.dart';
+import '../models/my_model.dart';
+import 'edit_page.dart';
+import 'up_date_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -12,36 +15,31 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     FirebaseFirestore myCloud = FirebaseFirestore.instance;
 
-    // logOut user
-    void logOut() {
-      FirebaseAuth.instance.signOut();
-      Get.back();
-    }
-
-    //add item to cloud
-    void addItem(name) async {
-      await myCloud.collection('myData').add(MyModel(name: name).toJson());
-    }
-
-    // update item to cloud
-    void editItem(snapshot, index) async {
-      final myId = snapshot.data!.docs[index].id;
-      myCloud.collection('myData').doc(myId).update(MyModel(name: 'Simone').toJson());
-    }
-
-    // delete item to cloud
-    void deleteItem(snapshot, index) {
-      final myId = snapshot.data!.docs[index].id;
-      myCloud.collection('myData').doc(myId).delete();
-    }
-
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
         title: const Text('Home Page'),
         leading: const Text(''),
         actions: [
-          IconButton(onPressed: () => addItem('Paolo'), icon: const Icon(Icons.add)),
-          IconButton(onPressed: () => logOut(), icon: const Icon(Icons.logout)),
+          IconButton(
+            onPressed: () => Get.to(() => const EditPage()),
+            icon: const Icon(Icons.add),
+          ),
+          IconButton(
+            onPressed: () {
+              Get.defaultDialog(
+                title: 'LogOut this user',
+                middleText: 'Confirm ? NO "click outside"',
+                confirm: ElevatedButton(
+                    onPressed: () async {
+                      await FirebaseAuth.instance.signOut();
+                      Get.back();
+                    },
+                    child: const Text('Yes')),
+              );
+            },
+            icon: const Icon(Icons.logout),
+          ),
         ],
       ),
       body: StreamBuilder(
@@ -54,21 +52,34 @@ class HomePage extends StatelessWidget {
                 MyModel myItem = MyModel.fromJson(snapshot.data!.docs[index]);
                 return ListTile(
                   title: Text(myItem.name),
+                  subtitle: Text(myItem.year),
+                  onTap: () => Get.to(() => DetailPage(myItem: myItem)),
                   leading: IconButton(
-                    onPressed: () => editItem(snapshot, index),
+                    onPressed: () => Get.to(() => UpDatePage(snapshot: snapshot, index: index)),
                     icon: const Icon(Icons.edit),
                   ),
                   trailing: IconButton(
-                    onPressed: () => deleteItem(snapshot, index),
+                    onPressed: () {
+                      Get.defaultDialog(
+                        title: 'Delete Item to Cloud',
+                        middleText: 'Confirm ? NO "click outside"',
+                        confirm: ElevatedButton(
+                            onPressed: () async {
+                              final myId = snapshot.data!.docs[index].id;
+                              await myCloud.collection('myData').doc(myId).delete();
+                              Get.back();
+                            },
+                            child: const Text('Yes')),
+                      );
+                    },
                     icon: const Icon(Icons.delete),
                   ),
                 );
               },
             );
+          } else {
+            return Container();
           }
-          return const Center(
-            child: Text('No Data'),
-          );
         },
       ),
     );
