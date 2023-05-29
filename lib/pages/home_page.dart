@@ -12,13 +12,23 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     FirebaseFirestore myCloud = FirebaseFirestore.instance;
 
+    void logOut() {
+      FirebaseAuth.instance.signOut();
+      Get.back();
+    }
+
     void addItem(name) async {
       await myCloud.collection('myData').add(MyModel(name: name).toJson());
     }
 
-    void logOut() {
-      FirebaseAuth.instance.signOut();
-      Get.back();
+    void editItem(snapshot, index) async {
+      final myId = snapshot.data!.docs[index].id;
+      myCloud.collection('myData').doc(myId).update(MyModel(name: 'Simone').toJson());
+    }
+
+    void deleteItem(snapshot, index) {
+      final myId = snapshot.data!.docs[index].id;
+      myCloud.collection('myData').doc(myId).delete();
     }
 
     return Scaffold(
@@ -37,23 +47,15 @@ class HomePage extends StatelessWidget {
             return ListView.builder(
               itemCount: snapshot.data!.docs.length,
               itemBuilder: (context, index) {
-                final myId = snapshot.data!.docs[index].id;
                 MyModel myItem = MyModel.fromJson(snapshot.data!.docs[index]);
                 return ListTile(
                   title: Text(myItem.name),
                   leading: IconButton(
-                    onPressed: () {
-                      myCloud
-                          .collection('myData')
-                          .doc(myId)
-                          .update(MyModel(name: 'Ciao').toJson());
-                    },
+                    onPressed: () => editItem(snapshot, index),
                     icon: const Icon(Icons.edit),
                   ),
                   trailing: IconButton(
-                    onPressed: () {
-                      myCloud.collection('myData').doc(myId).delete();
-                    },
+                    onPressed: () => deleteItem(snapshot, index),
                     icon: const Icon(Icons.delete),
                   ),
                 );
