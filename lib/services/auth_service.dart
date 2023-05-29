@@ -26,7 +26,7 @@ class AuthService {
     return null;
   }
 
-  // register user
+  // login user
   Future<User?> login(String email, String password) async {
     try {
       UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(

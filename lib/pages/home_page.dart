@@ -12,20 +12,24 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     FirebaseFirestore myCloud = FirebaseFirestore.instance;
 
+    // logOut user
     void logOut() {
       FirebaseAuth.instance.signOut();
       Get.back();
     }
 
+    //add item to cloud
     void addItem(name) async {
       await myCloud.collection('myData').add(MyModel(name: name).toJson());
     }
 
+    // update item to cloud
     void editItem(snapshot, index) async {
       final myId = snapshot.data!.docs[index].id;
       myCloud.collection('myData').doc(myId).update(MyModel(name: 'Simone').toJson());
     }
 
+    // delete item to cloud
     void deleteItem(snapshot, index) {
       final myId = snapshot.data!.docs[index].id;
       myCloud.collection('myData').doc(myId).delete();
