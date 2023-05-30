@@ -65,7 +65,7 @@ class MyButtonUpDate extends StatelessWidget {
               Get.back();
             }
           },
-          child: const Text('Save', style: TextStyle(fontSize: 24)),
+          child: const Text('UpDate', style: TextStyle(fontSize: 24)),
         ),
       ),
     );

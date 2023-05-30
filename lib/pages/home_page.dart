@@ -17,6 +17,7 @@ class HomePage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        elevation: 0,
         centerTitle: true,
         title: const Text('Home Page'),
         leading: const Text(''),
@@ -33,7 +34,7 @@ class HomePage extends StatelessWidget {
                 confirm: ElevatedButton(
                     onPressed: () async {
                       await FirebaseAuth.instance.signOut();
-                      Get.back();
+                      Get.back(closeOverlays: true);
                     },
                     child: const Text('Yes')),
               );
@@ -43,37 +44,44 @@ class HomePage extends StatelessWidget {
         ],
       ),
       body: StreamBuilder(
-        stream: myCloud.collection('myData').snapshots(),
+        stream: myCloud.collection('myData').orderBy('year').snapshots(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
               itemCount: snapshot.data!.docs.length,
               itemBuilder: (context, index) {
                 MyModel myItem = MyModel.fromJson(snapshot.data!.docs[index]);
-                return ListTile(
-                  title: Text(myItem.name),
-                  subtitle: Text(myItem.year),
-                  onTap: () => Get.to(() => DetailPage(myItem: myItem)),
-                  leading: IconButton(
-                    onPressed: () => Get.to(() => UpDatePage(snapshot: snapshot, index: index)),
-                    icon: const Icon(Icons.edit),
-                  ),
-                  trailing: IconButton(
-                    onPressed: () {
-                      Get.defaultDialog(
-                        title: 'Delete Item to Cloud',
-                        middleText: 'Confirm ? NO "click outside"',
-                        confirm: ElevatedButton(
-                            onPressed: () async {
-                              final myId = snapshot.data!.docs[index].id;
-                              await myCloud.collection('myData').doc(myId).delete();
-                              Get.back();
-                            },
-                            child: const Text('Yes')),
-                      );
-                    },
-                    icon: const Icon(Icons.delete),
-                  ),
+                return Column(
+                  children: [
+                    const SizedBox(height: 3),
+                    ListTile(
+                      title: Text(myItem.name),
+                      subtitle: Text(myItem.year),
+                      tileColor: Colors.lightBlue,
+                      onTap: () => Get.to(() => DetailPage(myItem: myItem)),
+                      leading: IconButton(
+                        onPressed: () =>
+                            Get.to(() => UpDatePage(snapshot: snapshot, index: index)),
+                        icon: const Icon(Icons.edit),
+                      ),
+                      trailing: IconButton(
+                        onPressed: () {
+                          Get.defaultDialog(
+                            title: 'Delete Item to Cloud',
+                            middleText: 'Confirm ? NO "click outside"',
+                            confirm: ElevatedButton(
+                                onPressed: () async {
+                                  final myId = snapshot.data!.docs[index].id;
+                                  await myCloud.collection('myData').doc(myId).delete();
+                                  Get.back();
+                                },
+                                child: const Text('Yes')),
+                          );
+                        },
+                        icon: const Icon(Icons.delete),
+                      ),
+                    ),
+                  ],
                 );
               },
             );
