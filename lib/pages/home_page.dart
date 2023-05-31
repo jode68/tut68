@@ -60,8 +60,7 @@ class HomePage extends StatelessWidget {
                       tileColor: Colors.lightBlue,
                       onTap: () => Get.to(() => DetailPage(myItem: myItem)),
                       leading: IconButton(
-                        onPressed: () =>
-                            Get.to(() => UpDatePage(snapshot: snapshot, index: index)),
+                        onPressed: () => Get.to(() => UpDatePage(snapshot: snapshot, index: index)),
                         icon: const Icon(Icons.edit),
                       ),
                       trailing: IconButton(
