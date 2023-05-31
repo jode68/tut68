@@ -14,8 +14,10 @@ class EditPage extends StatelessWidget {
     TextEditingController addItem2 = TextEditingController();
 
     //add item to cloud
-    void addItem(name, year) async {
-      await myCloud.collection('myData').add(MyModel(name: name, year: year).toJson());
+    void addItem(name, year, prod) async {
+      await myCloud
+          .collection('myData')
+          .add(MyModel(name: name, year: year, prod: prod).toJson());
     }
 
     return Scaffold(

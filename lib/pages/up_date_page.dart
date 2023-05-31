@@ -18,17 +18,17 @@ class UpDatePage extends StatelessWidget {
     FirebaseFirestore myCloud = FirebaseFirestore.instance;
     TextEditingController addItem1 = TextEditingController();
     TextEditingController addItem2 = TextEditingController();
+    TextEditingController addItem3 = TextEditingController();
 
     addItem1.text = MyModel.fromJson(snapshot.data!.docs[index]).name;
     addItem2.text = MyModel.fromJson(snapshot.data!.docs[index]).year;
+    addItem3.text = MyModel.fromJson(snapshot.data!.docs[index]).prod;
 
     // update item to cloud
     void editItem(snapshot, index) async {
       final myId = snapshot.data!.docs[index].id;
-      myCloud
-          .collection('myData')
-          .doc(myId)
-          .update(MyModel(name: addItem1.text, year: addItem2.text).toJson());
+      myCloud.collection('myData').doc(myId).update(
+          MyModel(name: addItem1.text, year: addItem2.text, prod: addItem3.text).toJson());
     }
 
     return Scaffold(
@@ -41,6 +41,7 @@ class UpDatePage extends StatelessWidget {
           children: [
             MyTextField(context: context, controller: addItem1),
             MyTextField(context: context, controller: addItem2),
+            MyTextField(context: context, controller: addItem3),
             const Padding(
               padding: EdgeInsets.all(16),
               child: Divider(
